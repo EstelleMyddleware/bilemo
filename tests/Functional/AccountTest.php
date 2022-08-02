@@ -32,4 +32,16 @@ class AccountTest extends CustomApiTestCase
         // The list of accounts should not be available
         $this->assertResponseStatusCodeSame(401);
     }
+
+    /**
+     * @throws TransportExceptionInterface
+     * @TODO
+     * still not passing yet
+     */
+    public function testReadOneAccountWithJWTAuthToken(): void
+    {
+        $response = static::createClient()->request('GET', '/api/accounts/1');
+        // Only the current user's account should be readable
+        $this->assertResponseStatusCodeSame(403);
+    }
 }

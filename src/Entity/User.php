@@ -17,10 +17,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
-    collectionOperations: ['get', 'post'],
+    collectionOperations: [
+        "get",
+        "post" => [
+//            "security" => "is_granted('ROLE_ADMIN') or object.getAccount() == user.getAccount()",
+//            "security_message" => "Sorry, you can only create users belonging to your own Account.",
+        ]
+    ],
     itemOperations: [
         "get",
-        "delete" => ["security" => "is_granted('ROLE_ADMIN') or object.owner == user"],
+        "delete" => ["security" => "is_granted('ROLE_ADMIN') or object == user"],
     ],
     attributes: [
         'pagination_items_per_page' => 10,
@@ -54,6 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(targetEntity: Account::class, cascade: ['persist'], inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\Valid()]
+    #[Assert\NotBlank()]
     #[Groups(['user:read', 'user:write'])]
     private ?Account $account;
 

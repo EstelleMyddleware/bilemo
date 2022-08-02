@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\AccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
 #[ApiResource(
@@ -30,15 +32,19 @@ class Account
     private int  $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['user:read'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['user:read'])]
     private ?string $description;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['user:read'])]
     private ?string $industry;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['user:read'])]
     private ?string $primaryEmail;
 
     #[ORM\Column(type: 'datetime_immutable')]
@@ -50,6 +56,7 @@ class Account
     private ?\DateTimeImmutable $updatedAt;
 
     #[ORM\OneToMany(mappedBy: 'account', targetEntity: User::class, orphanRemoval: true)]
+    #[ApiSubresource]
     private $users;
 
     public function __construct()
